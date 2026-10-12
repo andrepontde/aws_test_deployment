@@ -62,12 +62,14 @@ resource "aws_instance" "server" {
   # Install your Python environment
   apt-get update -y
   apt-get install -y python3.14-venv
+  apt install uvicorn
+  apt install python3-pip
   python3.14 -m venv venv
   source venv/bin/activate
 
   # Clon the latest app directly onto the server
   git clone https://github.com/andrepontde/aws_test_deployment.git
-  cd aws_test_deployment
+  cd aws_test_deployment/Backend
   pip install -r requirements.txt
 
   # Run Uvicorn on port 80 bound to all interfaces
