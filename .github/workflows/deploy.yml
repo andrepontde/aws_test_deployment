@@ -42,7 +42,7 @@ jobs:
         AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
     - name: Save current Terraform deployment state (if file has changed)
-      if: hashFiles(env.STATE_FILE) != ''
+      # if: hashFiles(env.STATE_FILE) != ''
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
