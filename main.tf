@@ -64,15 +64,15 @@ resource "aws_instance" "server" {
   apt-get install -y curl git python3.14-venv
 
   # Install uv
-  curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh
+  curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
 
   # Clone and install the app
-  git clone https://github.com/andrepontde/aws_test_deployment.git /root/aws_test_deployment
-  cd /root/aws_test_deployment/Backend
-  uv sync --locked
+  git clone https://github.com/andrepontde/aws_test_deployment.git /aws_test_deployment
+  cd /aws_test_deployment/Backend
+  /usr/local/bin/uv sync --locked
 
   # Run Uvicorn on port 80 bound to all interfaces
-  uv run uvicorn main:app --host 0.0.0.0 --port 80 > uvicorn.log 2>&1 &
+  /usr/local/bin/uv run uvicorn main:app --host 0.0.0.0 --port 80 > uvicorn.log 2>&1 &
   EOF
 
   tags = {
