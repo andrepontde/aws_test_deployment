@@ -59,21 +59,20 @@ resource "aws_instance" "server" {
   vpc_security_group_ids = [aws_security_group.server_sg.id]
   user_data = <<-EOF
   #!/bin/bash
-  # Install your Python environment
+  # user_data runs as root
   apt-get update -y
-  apt-get install -y python3.14-venv
-  apt install uvicorn
-  apt install python3-pip
-  python3.14 -m venv venv
-  source venv/bin/activate
+  apt-get install -y curl git python3.14-venv
 
-  # Clon the latest app directly onto the server
-  git clone https://github.com/andrepontde/aws_test_deployment.git
-  cd aws_test_deployment/Backend
-  pip install -r requirements.txt
+  # Install uv
+  curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh
+
+  # Clone and install the app
+  git clone https://github.com/andrepontde/aws_test_deployment.git /root/aws_test_deployment
+  cd /root/aws_test_deployment/Backend
+  uv sync --locked
 
   # Run Uvicorn on port 80 bound to all interfaces
-  uvicorn main:app --host 0.0.0.0 --port 80 > uvicorn.log 2>&1 &
+  uv run uvicorn main:app --host 0.0.0.0 --port 80 > uvicorn.log 2>&1 &
   EOF
 
   tags = {
